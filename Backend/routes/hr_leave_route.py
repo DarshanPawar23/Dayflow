@@ -15,78 +15,78 @@ from controllers.hr_leave_controller import (
     HRLeaveController
 )
 
-from schemas.leave_schema import LeaveRejectRequest
+from schemas.hr_leave_schema import (
+    RejectLeaveRequest
+)
 
 
 router = APIRouter(
     prefix="/hr/leaves",
-    tags=["HR Leave"]
+    tags=["HR Leave Management"]
 )
+
 
 controller = HRLeaveController()
 
 
-# =====================================================
-# GET PENDING LEAVE REQUESTS
-# =====================================================
-
 @router.get("")
-def get_pending_leaves(
-
+def get_all_leave_requests(
     db: Session = Depends(get_db),
-
     current_user=Depends(get_current_user)
-
 ):
-
-    return controller.get_pending_leaves(
+    return controller.get_all_leave_requests(
         db,
         current_user
     )
 
 
-# =====================================================
-# APPROVE LEAVE
-# =====================================================
-
-@router.put("/{leave_id}/approve")
-def approve_leave(
-
-    leave_id: int,
-
+@router.get("/pending")
+def get_pending_leave_requests(
     db: Session = Depends(get_db),
-
     current_user=Depends(get_current_user)
-
 ):
-
-    return controller.approve_leave(
+    return controller.get_pending_leave_requests(
         db,
-        current_user,
-        leave_id
+        current_user
     )
 
 
-# =====================================================
-# REJECT LEAVE
-# =====================================================
-
-@router.put("/{leave_id}/reject")
-def reject_leave(
-
-    leave_id: int,
-
-    request: LeaveRejectRequest,
-
+@router.get("/{leave_request_id}")
+def get_leave_details(
+    leave_request_id: int,
     db: Session = Depends(get_db),
-
     current_user=Depends(get_current_user)
-
 ):
+    return controller.get_leave_details(
+        db,
+        leave_request_id,
+        current_user
+    )
 
+
+@router.put("/{leave_request_id}/approve")
+def approve_leave(
+    leave_request_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    return controller.approve_leave(
+        db,
+        leave_request_id,
+        current_user
+    )
+
+
+@router.put("/{leave_request_id}/reject")
+def reject_leave(
+    leave_request_id: int,
+    request: RejectLeaveRequest,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
     return controller.reject_leave(
         db,
+        leave_request_id,
         current_user,
-        leave_id,
         request.rejection_reason
     )
