@@ -133,3 +133,12 @@ class User(Base):
     back_populates="user",
     cascade="all, delete-orphan"
 )
+    leave_requests: Mapped[list["LeaveRequest"]] = relationship(
+    foreign_keys="LeaveRequest.user_id",
+    back_populates="user",
+    cascade="all, delete-orphan"
+)
+    payroll_records: Mapped[list["Payroll"]] = relationship(
+    back_populates="user",
+    cascade="all, delete-orphan"
+)
