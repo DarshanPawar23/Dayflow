@@ -15,6 +15,8 @@ from routes.hr_leave_route import router as hr_leave_router
 
 from routes.hr_payroll_route import router as hr_payroll_router
 from routes.employee_payroll_route import router as employee_payroll_router
+from routes.hr_employee_route import router as hr_employee_router
+from routes.hr_attendance_route import router as hr_attendance_router
 
 app = FastAPI(
     title="Dayflow HRMS",
@@ -41,4 +43,8 @@ app.include_router(
 
 app.include_router(
     employee_payroll_router
+)
+app.include_router(hr_employee_router)
+app.include_router(
+    hr_attendance_router
 )

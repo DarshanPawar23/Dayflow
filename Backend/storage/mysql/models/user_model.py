@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-
+from sqlalchemy import Boolean
 from storage.mysql.base import Base
 from sqlalchemy import DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -111,6 +111,12 @@ class User(Base):
     must_change_password: Mapped[bool] = mapped_column(
         default=False,
         nullable=False
+    )
+
+    is_active: Mapped[bool] = mapped_column(
+    Boolean,
+    default=True,
+    nullable=False
     )
 
     created_at: Mapped[datetime] = mapped_column(
