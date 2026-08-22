@@ -23,6 +23,7 @@ class AttendanceStatus(str, Enum):
     PRESENT = "PRESENT"
     ABSENT = "ABSENT"
     LEAVE = "LEAVE"
+    HALF_DAY = "HALF_DAY"
 
 
 class Attendance(Base):

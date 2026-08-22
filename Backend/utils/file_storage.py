@@ -10,6 +10,7 @@ from fastapi import UploadFile
 
 COMPANY_LOGO_DIR = "uploads/company_logos"
 PROFILE_IMAGE_DIR = "uploads/profile_images"
+MEDICAL_CERTIFICATE_DIR = "uploads/medical_certificates"
 
 
 # ============================================================
@@ -28,6 +29,13 @@ PROFILE_IMAGE_EXTENSIONS = {
     ".jpeg",
     ".png",
     ".webp",
+}
+
+MEDICAL_CERTIFICATE_EXTENSIONS = {
+    ".pdf",
+    ".jpg",
+    ".jpeg",
+    ".png",
 }
 
 
@@ -51,34 +59,28 @@ async def save_company_logo(
         file.filename or ""
     )[1].lower()
 
-    # Validate extension
     if extension not in COMPANY_LOGO_EXTENSIONS:
         raise ValueError(
             "Only JPG, JPEG, PNG and WEBP images are allowed"
         )
 
-    # Read file
     content = await file.read()
 
-    # Validate empty file
     if not content:
         raise ValueError(
             "Uploaded company logo is empty"
         )
 
-    # Validate file size
     if len(content) > MAX_FILE_SIZE:
         raise ValueError(
             "Company logo must be less than 5 MB"
         )
 
-    # Create directory
     os.makedirs(
         COMPANY_LOGO_DIR,
         exist_ok=True,
     )
 
-    # Make company name safe for filename
     safe_company_name = "".join(
         character.lower()
         if character.isalnum()
@@ -86,31 +88,25 @@ async def save_company_logo(
         for character in company_name
     ).strip("_")
 
-    # Fallback if company name is empty
     if not safe_company_name:
         safe_company_name = "company"
 
-    # Generate unique ID
     unique_id = uuid.uuid4().hex[:12]
 
-    # Create filename
     filename = (
         f"{safe_company_name}_logo_"
         f"{unique_id}"
         f"{extension}"
     )
 
-    # Complete path
     file_path = os.path.join(
         COMPANY_LOGO_DIR,
         filename,
     )
 
-    # Save file
     with open(file_path, "wb") as buffer:
         buffer.write(content)
 
-    # Return URL/path
     return file_path.replace("\\", "/")
 
 
@@ -127,49 +123,94 @@ async def save_profile_image(
         image.filename or ""
     )[1].lower()
 
-    # Validate extension
     if extension not in PROFILE_IMAGE_EXTENSIONS:
         raise ValueError(
             "Only JPG, JPEG, PNG and WEBP images are allowed"
         )
 
-    # Read file
     content = await image.read()
 
-    # Validate empty file
     if not content:
         raise ValueError(
             "Uploaded profile image is empty"
         )
 
-    # Validate file size
     if len(content) > MAX_FILE_SIZE:
         raise ValueError(
             "Profile image must be less than 5 MB"
         )
 
-    # Create directory
     os.makedirs(
         PROFILE_IMAGE_DIR,
         exist_ok=True,
     )
 
-    # Generate unique filename
     filename = (
         f"user_{user_id}_"
         f"{uuid.uuid4().hex}"
         f"{extension}"
     )
 
-    # Complete path
     file_path = os.path.join(
         PROFILE_IMAGE_DIR,
         filename,
     )
 
-    # Save file
     with open(file_path, "wb") as buffer:
         buffer.write(content)
 
-    # Return URL/path
+    return file_path.replace("\\", "/")
+
+
+# ============================================================
+# MEDICAL CERTIFICATE
+# ============================================================
+
+async def save_medical_certificate(
+    file: UploadFile,
+    user_id: int,
+) -> str:
+
+    extension = os.path.splitext(
+        file.filename or ""
+    )[1].lower()
+
+    if extension not in MEDICAL_CERTIFICATE_EXTENSIONS:
+        raise ValueError(
+            "Only PDF, JPG, JPEG and PNG files are allowed"
+        )
+
+    content = await file.read()
+
+    if not content:
+        raise ValueError(
+            "Uploaded medical certificate is empty"
+        )
+
+    if len(content) > MAX_FILE_SIZE:
+        raise ValueError(
+            "Medical certificate must be less than 5 MB"
+        )
+
+    os.makedirs(
+        MEDICAL_CERTIFICATE_DIR,
+        exist_ok=True,
+    )
+
+    unique_id = uuid.uuid4().hex[:12]
+
+    filename = (
+        f"user_{user_id}_certificate_"
+        f"{unique_id}"
+        f"{extension}"
+    )
+
+    file_path = os.path.join(
+        MEDICAL_CERTIFICATE_DIR,
+        filename,
+    )
+
+    with open(file_path, "wb") as buffer:
+        buffer.write(content)
+
     return file_path.replace("\\", "/")

@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-
+from sqlalchemy import Boolean
 from storage.mysql.base import Base
 from sqlalchemy import DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -113,6 +113,12 @@ class User(Base):
         nullable=False
     )
 
+    is_active: Mapped[bool] = mapped_column(
+    Boolean,
+    default=True,
+    nullable=False
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow,
@@ -130,6 +136,15 @@ class User(Base):
         back_populates="users"
     )
     attendance_records: Mapped[list["Attendance"]] = relationship(
+    back_populates="user",
+    cascade="all, delete-orphan"
+)
+    leave_requests: Mapped[list["LeaveRequest"]] = relationship(
+    foreign_keys="LeaveRequest.user_id",
+    back_populates="user",
+    cascade="all, delete-orphan"
+)
+    payroll_records: Mapped[list["Payroll"]] = relationship(
     back_populates="user",
     cascade="all, delete-orphan"
 )
