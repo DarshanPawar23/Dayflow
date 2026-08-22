@@ -1,8 +1,9 @@
 from datetime import datetime
 from enum import Enum
+
 from storage.mysql.base import Base
 from sqlalchemy import DateTime, ForeignKey, String
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 class UserRole(str, Enum):
@@ -91,6 +92,11 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(
         String(255),
         nullable=False
+    )
+
+    profile_image_url: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True
     )
 
     role: Mapped[UserRole] = mapped_column(
