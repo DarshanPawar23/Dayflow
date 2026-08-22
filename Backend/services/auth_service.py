@@ -122,7 +122,8 @@ class Authservice:
 
         token = create_access_token(
             existing_user.id,
-            existing_user.role
+            existing_user.role,
+            existing_user.company_id
         )
 
         return {

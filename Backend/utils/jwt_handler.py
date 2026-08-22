@@ -4,11 +4,16 @@ from datetime import datetime, timedelta
 from config import Config
 
 
-def create_access_token(user_id: int, role: str):
+def create_access_token(
+    user_id: int,
+    role: str,
+    company_id: int
+):
 
     payload = {
         "user_id": user_id,
         "role": role,
+        "company_id": company_id,
         "exp": datetime.utcnow() + timedelta(hours=24)
     }
 
@@ -22,6 +27,7 @@ def create_access_token(user_id: int, role: str):
 
 
 def decode_access_token(token: str):
+
     try:
         payload = jwt.decode(
             token,
