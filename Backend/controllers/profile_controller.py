@@ -29,3 +29,21 @@ class ProfileController:
                 status_code=400,
                 detail=str(e)
             )
+
+    def get_my_profile(
+        self,
+        db: Session,
+        user_id: int
+    ):
+
+        try:
+            return self.profile_service.get_my_profile(
+                db,
+                user_id
+            )
+
+        except Exception as e:
+            raise HTTPException(
+                status_code=404,
+                detail=str(e)
+            )

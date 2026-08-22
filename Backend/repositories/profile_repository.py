@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from storage.mysql.models.user_model import User
 
@@ -13,6 +13,22 @@ class ProfileRepository:
         return (
             db.query(User)
             .filter(User.id == user_id)
+            .first()
+        )
+
+    def get_my_profile(
+        self,
+        db: Session,
+        user_id: int
+    ):
+        return (
+            db.query(User)
+            .options(
+                joinedload(User.company)
+            )
+            .filter(
+                User.id == user_id
+            )
             .first()
         )
 

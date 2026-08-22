@@ -129,3 +129,7 @@ class User(Base):
     company: Mapped["Company"] = relationship(
         back_populates="users"
     )
+    attendance_records: Mapped[list["Attendance"]] = relationship(
+    back_populates="user",
+    cascade="all, delete-orphan"
+)
